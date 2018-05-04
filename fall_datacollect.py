@@ -1,7 +1,7 @@
 import time, math, mraa, socket, select  
 import numpy as np
 import csv
- 
+#Similar as norm datacollect, just save data in different csv 
 switch_pin_number=8
 buzz_pin_number=6
  

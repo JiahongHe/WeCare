@@ -1,3 +1,4 @@
+%Load the data
 xg = '/Users/zhengwei/Desktop/data/Normal_X_Gyroscope.csv';
 X_G = xlsread(xg);
 yg = '/Users/zhengwei/Desktop/data/Normal_Y_Gyroscope.csv';
@@ -11,6 +12,7 @@ Y_A = xlsread(ya);
 za = '/Users/zhengwei/Desktop/data/Normal_Z_Accelerometer.csv';
 Z_A = xlsread(za);
 
+%Calculate features like max, mean, variance, etc.
 [m,n] = size(X_G);
 data = zeros(m,48);
 data(:,1) = max(X_G,[],2);
@@ -61,5 +63,5 @@ data(:,45) = data(:,41)-data(:,42);
 data(:,46) = mean(Z_A(:,1:40),2);
 data(:,47) = mean(Z_A(:,41:80),2);
 data(:,48) = data(:,46)-data(:,47);
-
+%Save data
 dlmwrite('/Users/zhengwei/Desktop/data/Normal.csv',data);

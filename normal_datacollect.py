@@ -1,7 +1,7 @@
 import time, math, mraa, socket, select  
 import numpy as np
 import csv
- 
+#Initialization
 switch_pin_number=8
 buzz_pin_number=6
  
@@ -9,7 +9,7 @@ x = mraa.I2c(6)
 MPU = 0x68  
 x.address(MPU)  
 x.writeReg(0x6B, 0) 
-
+#Data collection
 def data_collect(args):
         buzz.write(1)
         time.sleep(0.2)
@@ -21,6 +21,7 @@ def data_collect(args):
         Y_Gy = []
         Z_Gy = []
         x.address(MPU)
+        #Read raw data from the sensor
         for i in range (0,80):
             AcX = np.int16(x.readReg(0x3C) | x.readReg(0x3B)<<8)  
             AcY = np.int16(x.readReg(0x3E) | x.readReg(0x3D)<<8)  
@@ -35,7 +36,7 @@ def data_collect(args):
             Y_Gy.append(GyY)
             Z_Gy.append(GyZ)
             time.sleep(0.02)
-        #print "X_Ac:",(X_Ac)
+        #save data
         with open("Normal_X_Accelerometer.csv","ab") as csvfile: 
             writer = csv.writer(csvfile)
             writer.writerow(X_Ac)

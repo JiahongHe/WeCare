@@ -5,7 +5,7 @@ import requests
 import sys,json
 import boto3
 import aws
-
+#Iniatialization
 led_pin_number=4
 led = mraa.Gpio(led_pin_number)
 led.dir(mraa.DIR_OUT)
@@ -23,7 +23,7 @@ x = mraa.I2c(6)
 MPU = 0x68  
 x.address(MPU)  
 x.writeReg(0x6B, 0)
-
+#Heart rate calculation function
 def test_pulse():
     Pulse = float(PulSensor.read())
     current_signal[0] = Pulse
@@ -36,7 +36,7 @@ def test_pulse():
         led.write(1)
     else:
         led.write(0)
-
+#get location function using google API
 def GPS():
     GOOGLE_MAPS_API_URL = 'https://www.googleapis.com/geolocation/v1/geolocate?key=AIzaSyBUj_H7Bp6sel10RKaSJm8DQop5NoH1-WE'
     params = {'wifiAccessPoints':[{'macAddress':'fc:c2:de:3c:4f:8f'}]}
@@ -45,7 +45,7 @@ def GPS():
     lat = res['location']['lat']
     lng = res['location']['lng']
     return (lat,lng)
-
+# Data collect function
 def data_collect(args):
         buzz.write(1)
         time.sleep(0.2)
@@ -59,6 +59,7 @@ def data_collect(args):
         Y_Gy = []
         Z_Gy = []
         x.address(MPU)
+        #Read raw data
         for i in range (0,80):
             test_pulse()
             AcX = np.int16(x.readReg(0x3C) | x.readReg(0x3B)<<8)  
@@ -75,7 +76,7 @@ def data_collect(args):
             Z_Gy.append(GyZ)
             time.sleep(0.02)
         ##########################################################
-        #data processing and sending here
+        #data preprocessing
         data = np.zeros(53)
         data[0] = np.max(X_Gy)
         data[1] = np.min(X_Gy)
@@ -131,7 +132,7 @@ def data_collect(args):
         data[50]=int(BPM[0])
         data[51]=float(lat)
 	data[52]=float(lng)
-        ##########################################################
+        #save the data in an csv
         with open("data.csv","wb") as csvfile:
             writer = csv.DictWriter(csvfile, fieldnames = ["XG_max","XG_min","XG_mean","XG_var","XG_max-min","XG_fmean","XG_lmean",
             "XG_f-lmean","YG_max","YG_min","YG_mean","YG_var","YG_max-min","XG_fmean","YG_lmean","YG_f-lmean",
@@ -144,6 +145,7 @@ def data_collect(args):
             writer = csv.writer(csvfile)
             writer.writerow(data)
 	    csvfile.close()
+        #Push the data to kinesis
         KINESIS_STREAM_NAME = "finalproject"
         kinesis = boto3.client('kinesis', region_name='us-east-1')
         with open("data.csv",'rb') as f:
