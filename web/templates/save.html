@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="refresh" content="5">
+    <title>Detect</title>
+    <style>
+    body {
+    background-color: wheat;
+    }
+    ul{
+    color: purple;
+    font-size: 25px;
+    }
+    a#home{
+    font-size: 30px;
+    position: relative;
+    }
+    </style>
+</head>
+<body>
+<ul>
+{% for label in items %}
+  <li>{{label}}</li>
+  {% endfor %}
+</ul>
+<p></p>
+<section>
+<a href="" id="home">Home</a>
+</section>
+</body>
+</html>
